@@ -1,0 +1,23 @@
+data = [
+    {
+        "title": "Question 1",
+        "question": "Which isn't a valid string?",
+        "options": [
+            "a) A string",
+            "b) %22A%20string%22",
+            "c) %27A%20string%27",
+            "d) %60A%20string%60"
+        ],
+        "answer": 0
+    },
+    {
+        "title": "Question 2",
+        "question": "Which isn't a valid function?",
+        "options": [
+            "a) function%20%28%29%20%7B%7D",
+            "b) %28%29%20%3D%3E%20%7B%7D",
+            "c) fn%20%28%29%20%7B%7D"
+        ],
+        "answer": 2
+    }
+]
