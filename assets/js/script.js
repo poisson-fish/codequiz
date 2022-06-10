@@ -71,6 +71,11 @@ function createNewCarouselCard(question, index) {
                     setTimeout(() => {
                         appState.currentQuestion++;
                         carouselData.next();
+                        const currentCompletion = (appState.currentQuestion / quizQuestions.length) * 100;
+                        document.querySelectorAll("#progressBar").forEach((progressBar) => {
+                            progressBar.style = `width: ${currentCompletion}%`;
+                            progressBar.ariaValueNow = currentCompletion;
+                        });
                     }, cardDelay);
                 }
                 else {
@@ -106,12 +111,6 @@ function start() {
             <i class="fa fa-question-circle" aria-hidden="true"></i>
             ${Math.floor(countdownTimer)} seconds remaining!
             `;
-        });
-        const currentCompletion = (appState.currentQuestion / quizQuestions.length) * 100;
-        document.querySelectorAll("#progressBar").forEach((progressBar) => 
-        {
-            progressBar.style = `width: ${currentCompletion}%`;
-            progressBar.ariaValueNow = currentCompletion;
         });
     }, timeResolution * 1000);
 
