@@ -69,13 +69,20 @@ function createNewCarouselCard(question, index) {
                 if (answerid == question.answer) {
                     displayAlert(footer, "Correct!", 'alert-success');
                     setTimeout(() => {
-                        appState.currentQuestion++;
-                        carouselData.next();
-                        const currentCompletion = (appState.currentQuestion / quizQuestions.length) * 100;
-                        document.querySelectorAll("#progressBar").forEach((progressBar) => {
-                            progressBar.style = `width: ${currentCompletion}%`;
-                            progressBar.ariaValueNow = currentCompletion;
-                        });
+                        if ((appState.currentQuestion + 2) > quizQuestions.length) {
+                            const finalScoreT = document.getElementById("finalScoreText");
+                            finalScoreT.textContent = `Your score is: ${Math.round(countdownTimer)}`;
+                            carouselData.next();
+                        }
+                        else {
+                            appState.currentQuestion++;
+                            carouselData.next();
+                        }
+                        const currentCompletion = (appState.currentQuestion / (quizQuestions.length - 1)) * 100;
+                            document.querySelectorAll("#progressBar").forEach((progressBar) => {
+                                progressBar.style = `width: ${currentCompletion}%`;
+                                progressBar.ariaValueNow = currentCompletion;
+                            });
                     }, cardDelay);
                 }
                 else {
@@ -92,15 +99,43 @@ function createNewCarouselCard(question, index) {
 }
 
 function start() {
+    
     const questionNum = appState.currentQuestion;
     if (questionNum >= quizQuestions.length) return;
     const question = quizQuestions[questionNum];
 
     //Clear carousel 
-    //carouselContainer.innerHTML = '';
+    
     quizQuestions.forEach((question, index) => {
         createNewCarouselCard(question, index);
     });
+
+    const endCard = document.createElement('div');
+    endCard.className = 'carousel-item';
+
+    const newCard = document.createElement('div');
+    newCard.className = 'card text-center';
+    newCard.innerHTML = `
+<div class="card-header">
+    <i class="fa fa-question-circle" aria-hidden="true"></i>
+    Game Over!
+</div>
+<div class="card-body" id="cardBody">
+    <h5 class="card-title">Game Over!</h5>
+    <p class="card-text" id="finalScoreText"></p>
+</div>
+<div class="card-footer text-muted">
+    <div class="container-fluid">
+            <div class="progress" style="width: 100%">
+            <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+   
+    </div>
+</div>`;
+
+    endCard.appendChild(newCard);
+    carouselContainer.appendChild(endCard);
+
 
     const timeResolution = 0.5;
     countdownTimer = 60.0;
@@ -128,17 +163,6 @@ function displayAlert(cardBody, alertText, alertType) {
     newAlert.role = 'alert';
     newAlert.textContent = alertText;
 
-    const alertButton = document.createElement('button');
-    alertButton.class = 'close';
-    alertButton.dataDismiss = 'alert';
-    alertButton.ariaLabel = 'Close';
-
-    const buttonSpan = document.createElement('span');
-    buttonSpan.ariaHidden = 'true';
-    buttonSpan.textContent = 'X';
-
-    //alertButton.appendChild(buttonSpan);
-    //newAlert.appendChild(alertButton);
     cardBody.appendChild(newAlert);
 
     const alertBs = new bootstrap.Alert(newAlert);
@@ -147,7 +171,6 @@ function displayAlert(cardBody, alertText, alertType) {
 function answerCurrentQuestion(selectedAnswer) {
 
 }
-
 
 startButton.onclick = (e) => {
     start();
