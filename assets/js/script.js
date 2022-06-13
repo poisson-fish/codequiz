@@ -38,13 +38,14 @@ function createNewCarouselCard(question, index) {
     <p class="card-text" id="questionText">${question.question}</p>
     <ul class="list-group" id="answerList">
     </ul>
+    <div id="alertMount" style="height: 50px">
+    </div>
 </div>
 <div class="card-footer text-muted">
     <div class="container-fluid">
             <div class="progress" style="width: 100%">
             <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-   
     </div>
 </div>`;
     const answerList = newCard.querySelector('#answerList');
@@ -65,7 +66,7 @@ function createNewCarouselCard(question, index) {
             questionButton.textContent = decodeURIComponent(answer.val);
             questionButton.onclick = (e) => {
                 const answerid = e.target.parentElement.getAttribute('data-answerid');
-                const footer = newCard.querySelector("#cardBody");
+                const footer = newCard.querySelector("#alertMount");
 
                 if (answerid == question.answer) {
                     displayAlert(footer, "Correct!", 'alert-success');
@@ -143,7 +144,8 @@ function start() {
     countdownInterval = setInterval(() => {
         countdownTimer -= timeResolution;
         if(countdownTimer <= 0){
-            carouselData.to(quizQuestions.length + 2);
+            carouselData.to(quizQuestions.length + 1);
+            clearInterval(countdownInterval);
         }
         else{
             document.querySelectorAll("#cardHeader").forEach((timerText) => {
