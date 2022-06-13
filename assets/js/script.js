@@ -193,8 +193,8 @@ function start () {
 
   const tryAgainBtn = document.getElementById('tryAgainBtn')
   tryAgainBtn.onclick = (e) => {
-    start()
     carouselData.to(1)
+    start()
   }
   const timeResolution = 1.0
   countdownTimer = 60.0
