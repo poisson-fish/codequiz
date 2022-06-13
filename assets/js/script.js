@@ -9,6 +9,7 @@ const carouselData = new bootstrap.Carousel(carouselContainer.parentElement, {
 });
 const cardDelay = 750;
 const quizQuestions = data;
+var endCard;
 
 const savedState = localStorage.getItem('appstate');
 const appState = savedState ? savedState : {
@@ -110,7 +111,7 @@ function start() {
         createNewCarouselCard(question, index);
     });
 
-    const endCard = document.createElement('div');
+    endCard = document.createElement('div');
     endCard.className = 'carousel-item';
 
     const newCard = document.createElement('div');
@@ -137,16 +138,22 @@ function start() {
     carouselContainer.appendChild(endCard);
 
 
-    const timeResolution = 0.5;
+    const timeResolution = 1.0;
     countdownTimer = 60.0;
     countdownInterval = setInterval(() => {
         countdownTimer -= timeResolution;
-        document.querySelectorAll("#cardHeader").forEach((timerText) => {
-            timerText.innerHTML = `
-            <i class="fa fa-question-circle" aria-hidden="true"></i>
-            ${Math.floor(countdownTimer)} seconds remaining!
-            `;
-        });
+        if(countdownTimer <= 0){
+            carouselData.to(quizQuestions.length + 2);
+        }
+        else{
+            document.querySelectorAll("#cardHeader").forEach((timerText) => {
+                timerText.innerHTML = `
+                <i class="fa fa-question-circle" aria-hidden="true"></i>
+                ${Math.floor(countdownTimer)} seconds remaining!
+                `;
+            });
+        }
+       
     }, timeResolution * 1000);
 
 }
