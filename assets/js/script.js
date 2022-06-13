@@ -10,12 +10,10 @@ const carouselData = new bootstrap.Carousel(carouselContainer.parentElement, {
 })
 const cardDelay = 750
 const quizQuestions = data
-let endCard = {}
+let gameOverCard = {}
 
-const savedState = localStorage.getItem('appstate')
-const appState = savedState || {
-  currentQuestion: 0,
-  answers: []
+const appState = {
+  currentQuestion: 0
 }
 
 let countdownTimer = 60.0
@@ -73,9 +71,7 @@ function createNewCarouselCard (question, index) {
           displayAlert(footer, 'Correct!', 'alert-success')
           setTimeout(() => {
             if ((appState.currentQuestion + 2) > quizQuestions.length) {
-              const finalScoreT = document.getElementById('finalScoreText')
-              finalScoreT.textContent = `Your score is: ${Math.round(countdownTimer)}`
-              carouselData.next()
+              end()
             } else {
               appState.currentQuestion++
               carouselData.next()
@@ -89,6 +85,10 @@ function createNewCarouselCard (question, index) {
         } else {
           displayAlert(footer, 'Incorrect!', 'alert-danger')
           countdownTimer -= 10
+          if (countdownTimer < 0) {
+            countdownTimer = 0
+            end()
+          }
         }
       }
       carItem.appendChild(newCard)
@@ -107,12 +107,12 @@ function start () {
     createNewCarouselCard(question, index)
   })
 
-  endCard = document.createElement('div')
-  endCard.className = 'carousel-item'
+  gameOverCard = document.createElement('div')
+  gameOverCard.className = 'carousel-item'
 
-  const newCard = document.createElement('div')
-  newCard.className = 'card text-center'
-  newCard.innerHTML = `
+  const gameOverContents = document.createElement('div')
+  gameOverContents.className = 'card text-center'
+  gameOverContents.innerHTML = `
 <div class="card-header">
     <i class="fa fa-question-circle" aria-hidden="true"></i>
     Game Over!
@@ -120,6 +120,11 @@ function start () {
 <div class="card-body" id="cardBody">
     <h5 class="card-title">Game Over!</h5>
     <p class="card-text" id="finalScoreText"></p>
+    <div class="input-group input-group-sm mb-3">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Initials</span>
+    <input id="initialsInput" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+    </div>
+    <a href="#" id="saveScoreBtn" class="btn btn-primary" style="width: 100%; height: 100%;">Save Highscore</a></div>
 </div>
 <div class="card-footer text-muted">
     <div class="container-fluid">
@@ -130,16 +135,73 @@ function start () {
     </div>
 </div>`
 
-  endCard.appendChild(newCard)
-  carouselContainer.appendChild(endCard)
+  gameOverCard.appendChild(gameOverContents)
+  carouselContainer.appendChild(gameOverCard)
 
+  saveScoreBtn = document.getElementById('saveScoreBtn')
+  saveScoreBtn.onclick = (e) => {
+    const initials = document.getElementById('initialsInput').value
+    const scoreList = JSON.parse(localStorage.getItem('hs')) || []
+
+    const foundPrev = scoreList.filter((score) => score.player === initials)
+    if (foundPrev.length > 0) {
+      foundPrev[0].score = Math.max(foundPrev[0].score, countdownTimer)
+    } else {
+      scoreList.push({
+        player: initials,
+        score: countdownTimer
+      })
+    }
+    localStorage.setItem('hs', JSON.stringify(scoreList))
+    const scoreHtml = scoreList
+      .sort((a, b) => b.score - a.score)
+      .map((entry) => `<li class="list-group-item">${entry.player}: ${entry.score}</li>`)
+      .join('')
+
+    scoreBoardMount = document.getElementById('scoreBoardMount')
+    scoreBoardMount.innerHTML = scoreHtml
+    carouselData.next()
+  }
+
+  scoreBoardCard = document.createElement('div')
+  scoreBoardCard.className = 'carousel-item'
+
+  const scoreBoardContents = document.createElement('div')
+  scoreBoardContents.className = 'card text-center'
+  scoreBoardContents.innerHTML = `
+<div class="card-header" style="height: auto">
+    <i class="fa fa-question-circle" aria-hidden="true"></i>
+    Score Board
+</div>
+<div class="card-body" id="cardBody" style="height: auto">
+    <h5 class="card-title">Scores!</h5>
+    <ul id="scoreBoardMount" class="list-group" style="height: auto">
+    </ul>
+    <a href="#" id="tryAgainBtn" class="btn btn-primary" style="width: 100%; height: 100%;">Try again!</a></div>
+</div>
+<div class="card-footer text-muted">
+    <div class="container-fluid">
+            <div class="progress" style="width: 100%">
+            <div id="progressBar" class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+   
+    </div>
+</div>`
+
+  scoreBoardCard.appendChild(scoreBoardContents)
+  carouselContainer.appendChild(scoreBoardCard)
+
+  const tryAgainBtn = document.getElementById('tryAgainBtn')
+  tryAgainBtn.onclick = (e) => {
+    start()
+    carouselData.to(1)
+  }
   const timeResolution = 1.0
   countdownTimer = 60.0
   countdownInterval = setInterval(() => {
     countdownTimer -= timeResolution
     if (countdownTimer <= 0) {
-      carouselData.to(quizQuestions.length + 1)
-      clearInterval(countdownInterval)
+      end()
     } else {
       document.querySelectorAll('#cardHeader').forEach((timerText) => {
         timerText.innerHTML = `
@@ -151,6 +213,13 @@ function start () {
   }, timeResolution * 1000)
 }
 
+function end () {
+  clearInterval(countdownInterval)
+  appState.currentQuestion = 0
+  const finalScoreT = document.getElementById('finalScoreText')
+  finalScoreT.textContent = `Your score is: ${Math.round(countdownTimer)}`
+  carouselData.to(quizQuestions.length + 1)
+}
 function displayAlert (cardBody, alertText, alertType) {
   // Wipe all alerts in the card
   const alertList = cardBody.querySelectorAll('.alert')
