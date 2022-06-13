@@ -3,10 +3,10 @@ data = [
         "title": "Question 1",
         "question": "Which isn't a valid string?",
         "options": [
-            "a) A string",
-            "b) %22A%20string%22",
-            "c) %27A%20string%27",
-            "d) %60A%20string%60"
+            "A%20string",
+            "%22A%20string%22",
+            "%27A%20string%27",
+            "%60A%20string%60"
         ],
         "answer": 0
     },
@@ -14,10 +14,51 @@ data = [
         "title": "Question 2",
         "question": "Which isn't a valid function?",
         "options": [
-            "a) function%20%28%29%20%7B%7D",
-            "b) %28%29%20%3D%3E%20%7B%7D",
-            "c) fn%20%28%29%20%7B%7D"
+            "function%20%28%29%20%7B%7D",
+            "%28%29%20%3D%3E%20%7B%7D",
+            "fn%20%28%29%20%7B%7D"
         ],
         "answer": 2
+    },
+    {
+        "title": "Question 3",
+        "question": "Which isn't a valid way to declare a variable?",
+        "options": [
+            "var%20aVariable%20%3D%205%3B",
+            "let%20aVariable%20%3D%205%3B",
+            "const%20aVariable%20%3D%205%3B",
+            "aVariable%20%3D%205%3B"
+        ],
+        "answer": 3
+    },
+    {
+        "title": "Question 4",
+        "question": "Which equality operator checks for equal value AND type?",
+        "options": [
+            "%3D",
+            "%3D%3D",
+            "%3D%3D%3D"
+        ],
+        "answer": 2
+    },
+    {
+        "title": "Question 5",
+        "question": "Which is an example of string interpolation?",
+        "options": [
+            "const%20aString%20%3D%20%27Hello%20%27%20%2B%20anotherString%3B",
+            "const%20aString%20%3D%20%27Hello%20%27%3B",
+            "const%20aString%20%3D%20%60Hello%20%24%7BanotherString%7D%60%3B"
+        ],
+        "answer": 2
+    },
+    {
+        "title": "Question 6",
+        "question": "Which is an example of string concatenation?",
+        "options": [
+            "const%20aString%20%3D%20%27Hello%20%27%20%2B%20anotherString%3B",
+            "const%20aString%20%3D%20%27Hello%20%27%3B",
+            "const%20aString%20%3D%20%60Hello%20%24%7BanotherString%7D%60%3B"
+        ],
+        "answer": 0
     }
 ]
