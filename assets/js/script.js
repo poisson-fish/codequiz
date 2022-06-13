@@ -12,10 +12,7 @@ const cardDelay = 750
 const quizQuestions = data
 let gameOverCard = {}
 
-const appState = {
-  currentQuestion: 0
-}
-
+let currentQuestion = 0
 let countdownTimer = 60.0
 let countdownInterval
 
@@ -70,13 +67,13 @@ function createNewCarouselCard (question, index) {
         if (answerid == question.answer) {
           displayAlert(footer, 'Correct!', 'alert-success')
           setTimeout(() => {
-            if ((appState.currentQuestion + 2) > quizQuestions.length) {
+            if ((currentQuestion + 2) > quizQuestions.length) {
               end()
             } else {
-              appState.currentQuestion++
+              currentQuestion++
               carouselData.next()
             }
-            const currentCompletion = (appState.currentQuestion / (quizQuestions.length - 1)) * 100
+            const currentCompletion = (currentQuestion / (quizQuestions.length - 1)) * 100
             document.querySelectorAll('#progressBar').forEach((progressBar) => {
               progressBar.style = `width: ${currentCompletion}%`
               progressBar.ariaValueNow = currentCompletion
@@ -99,7 +96,7 @@ function createNewCarouselCard (question, index) {
 }
 
 function start () {
-  const questionNum = appState.currentQuestion
+  const questionNum = currentQuestion
   if (questionNum >= quizQuestions.length) return
 
   // Clear carousel
@@ -222,7 +219,7 @@ function start () {
 
 function end () {
   clearInterval(countdownInterval)
-  appState.currentQuestion = 0
+  currentQuestion = 0
   const finalScoreT = document.getElementById('finalScoreText')
   finalScoreT.textContent = `Your score is: ${Math.round(countdownTimer)}`
   carouselData.to(quizQuestions.length + 1)
