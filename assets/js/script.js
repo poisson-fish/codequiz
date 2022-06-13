@@ -158,7 +158,7 @@ function start () {
       .map((entry) => `<li class="list-group-item">${entry.player}: ${entry.score}</li>`)
       .join('')
 
-    scoreBoardMount = document.getElementById('scoreBoardMount')
+    const scoreBoardMount = document.getElementById('scoreBoardMount')
     scoreBoardMount.innerHTML = scoreHtml
     carouselData.next()
   }
@@ -177,6 +177,7 @@ function start () {
     <h5 class="card-title">Scores!</h5>
     <ul id="scoreBoardMount" class="list-group" style="height: auto">
     </ul>
+    <a href="#" id="clearScoresBtn" class="btn btn-danger" style="width: 100%; height: 100%;">Clear scores</a></div>
     <a href="#" id="tryAgainBtn" class="btn btn-primary" style="width: 100%; height: 100%;">Try again!</a></div>
 </div>
 <div class="card-footer text-muted">
@@ -195,6 +196,12 @@ function start () {
   tryAgainBtn.onclick = (e) => {
     carouselData.to(1)
     start()
+  }
+  const clearScoresBtn = document.getElementById('clearScoresBtn')
+  clearScoresBtn.onclick = (e) => {
+    localStorage.clear()
+    const scoreBoardMount = document.getElementById('scoreBoardMount')
+    scoreBoardMount.innerHTML = ''
   }
   const timeResolution = 1.0
   countdownTimer = 60.0
